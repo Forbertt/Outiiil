@@ -19,10 +19,6 @@ class BoiteCombat extends Boite
         *
         */
         this._armee = null;
-        /**
-        *
-        */
-        this._coordonnees = {};
     }
 	/**
     * Affiche la boite.
@@ -540,31 +536,20 @@ class BoiteCombat extends Boite
         return Utils.intToTime(Math.pow(0.9, va) * 637200);
     }
     /**
-    *
+    * Calcule les temps de trajet vers les joueurs.
+    * Les membres d'alliance ne sont plus calcules : leurs coordonnees venaient du serveur outiiil.fr (arrete).
     */
     calculerTemps(ref, joueurs, alliances, dernierMvt = "")
     {
-        // promise pour recupérer les joueurs et leurs coordonnées
-        let promise = new Array();
-        // promise pour recup les coordonnées
-        if(!Object.keys(this._coordonnees).length) promise.push($.get("http://outiiil.fr/fzzz/" + Utils.serveur + "/map"));
         // promise qui recup le profil du ref
+        let promise = new Array();
         if(!ref.estJoueurCourant()) promise.push(ref.getProfil());
-        // promise pour recup les joueurs et les descriptions d'alliance
+        // promise pour recup les joueurs
         for(let joueur of joueurs) promise.push(joueur.getProfil());
-        for(let alliance of alliances) promise.push(alliance.getDescription());
+        if(alliances.length) $.toast({...TOAST_WARNING, text : "Le temps de trajet des membres d'alliance n'est plus disponible (carte hors ligne)."});
         // Execution des requetes
         Promise.all(promise).then((values) => {
             let rows = new Array(), ind = 0;
-            // on extrait les coordonnées
-            if(!Object.keys(this._coordonnees).length){
-                let donnees = JSON.parse(values[ind]);
-                for(let i = 0, l = donnees.message.split("\n") ; i < l.length ; i++){
-                    let tmp = l[i].split(";");
-                    this._coordonnees[tmp[1]] = {x : parseInt(tmp[3]), y : parseInt(tmp[2])};
-                }
-                ind++;
-            }
             // charge les donnes du ref
             if(!ref.estJoueurCourant()){
                 ref.chargerProfil(values[ind]);
@@ -575,16 +560,6 @@ class BoiteCombat extends Boite
                 joueurs[i].chargerProfil(values[i + ind]);
                 let tempsP = ref.getTempsParcours2(joueurs[i]);
                 rows.push($(`<tr><td>${joueurs[i].pseudo}</td><td>${numeral(joueurs[i].terrain).format()}</td><td>${Utils.intToTime(tempsP)}</td><td>${dernierMvt ? moment(dernierMvt, "DD-MM-YYYY HH:mm").add(tempsP, 's').format("D MMM à HH[h]mm[m]ss[s]") : ""}</td></tr>`)[0]);
-            }
-            // on recup les pseudos des alliances
-            for(let i = 0 ; i < alliances.length ; i++){
-                $(values[i + ind + joueurs.length]).find("#tabMembresAlliance tr:gt(0)").each((j, elt) => {
-                    let pseudo = $(elt).find("td:eq(2)").text(), terrain = numeral($(elt).find("td:eq(4)").text()).value();
-                    if(this._coordonnees.hasOwnProperty(pseudo)){
-                        let tempsP = ref.getTempsParcours(this._coordonnees[pseudo].x, this._coordonnees[pseudo].y);
-                        rows.push($(`<tr><td>${pseudo}</td><td>${numeral(terrain).format()}</td><td>${Utils.intToTime(tempsP)}</td><td>${dernierMvt ? moment(dernierMvt, "DD-MM-YYYY HH:mm").add(tempsP, 's').format("D MMM à HH[h]mm[m]ss[s]") : ""}</td></tr>`)[0]);
-                    }
-                });
             }
             // affichage du tableau des distances
             $("#o_infosTemps").DataTable().clear().rows.add(rows).draw();

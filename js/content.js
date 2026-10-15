@@ -6,7 +6,7 @@
 /**
 * CONSTANTE
 */
-const VERSION            = "2.0.1.1";
+const VERSION            = "2.1.0";
 const CONSTRUCTION       = ["Champignonnière", "Entrepôt de Nourriture", "Entrepôt de Matériaux", "Couveuse", "Solarium", "Laboratoire", "Salle d'analyse", "Salle de combat", "Caserne", "Dôme", "Loge Impériale", "Etable à pucerons", "Etable à cochenilles"];
 const RECHERCHE          = ["Technique de ponte", "Bouclier Thoracique", "Armes", "Architecture", "Communication avec les animaux", "Vitesse de chasse", "Vitesse d'attaque", "Génétique", "Acide", "Poison"];
 const COUT_CONSTUCTION   = [90, 600, 600, 600, 2000, 1400, 1400, 300, 800, 3500, 5000, 1500, 10000];
@@ -171,19 +171,18 @@ const IMG_GAUCHE         = "<img src='images/bouton/fleche-champs-gauche.gif' wi
 const IMG_DROITE         = "<img src='images/bouton/fleche-champs-droite.gif' width='9' height='15' class='o_vAlign'/>";
 const IMG_COPY           = "<img src='images/icone/feuille.gif' class='cliquable' title='Copier/Coller une armée' style='position:relative;top:3px' width='14' height='17'>";
 // Image pour l'extension
-const IMG_CHANGE         = chrome.extension.getURL("images/change.png");
-const IMG_ACTUALISER     = chrome.extension.getURL("images/actualize_on_01.png");
-const IMG_CRAYON	     = chrome.extension.getURL("images/crayon.gif");
-const IMG_CROIX			 = chrome.extension.getURL("images/croix.png");
-const IMG_COPIER		 = chrome.extension.getURL("images/copy.png");
-const IMG_HISTORIQUE	 = chrome.extension.getURL("images/historique.png");
-const IMG_LIVRAISON		 = chrome.extension.getURL("images/livraison.png");
-const IMG_RADAR			 = chrome.extension.getURL("images/radar.png");
-const IMG_SPRITE_MENU	 = chrome.extension.getURL("images/sprite_menu.png");
-const IMG_UTILITY		 = chrome.extension.getURL("images/utility.png");
-const IMG_DOWN			 = chrome.extension.getURL("images/down.png");
-const IMG_UP			 = chrome.extension.getURL("images/up.png");
-const IMG_OUTIIIL		 = chrome.extension.getURL("images/outiiil.png");
+const IMG_CHANGE         = chrome.runtime.getURL("images/change.png");
+const IMG_ACTUALISER     = chrome.runtime.getURL("images/actualize_on_01.png");
+const IMG_CRAYON	     = chrome.runtime.getURL("images/crayon.gif");
+const IMG_CROIX			 = chrome.runtime.getURL("images/croix.png");
+const IMG_COPIER		 = chrome.runtime.getURL("images/copy.png");
+const IMG_LIVRAISON		 = chrome.runtime.getURL("images/livraison.png");
+const IMG_RADAR			 = chrome.runtime.getURL("images/radar.png");
+const IMG_SPRITE_MENU	 = chrome.runtime.getURL("images/sprite_menu.png");
+const IMG_UTILITY		 = chrome.runtime.getURL("images/utility.png");
+const IMG_DOWN			 = chrome.runtime.getURL("images/down.png");
+const IMG_UP			 = chrome.runtime.getURL("images/up.png");
+const IMG_OUTIIIL		 = chrome.runtime.getURL("images/outiiil.png");
 
 const TOAST_ERROR        = {heading : "Erreur", hideAfter: 3500, showHideTransition : "slide", position: {top : 30, right : 100}, icon : "error"};
 const TOAST_SUCCESS      = {heading : "Succès", hideAfter: 3500, showHideTransition : "slide", position: {top : 30, right : 100}, icon : "success"};
@@ -229,7 +228,6 @@ const DATEPICKER_OPTION  = {
 		// Chargement du language francais
         numeral.locale("fr");
 		moment.locale("fr");
-		Highcharts.setOptions({lang : {months : MOIS_FR, shortMonths : MOIS_RAC_FR, weekdays : JOUR_FR, decimalPoint : ',', thousandsSep : ' '}});
         // Ajout du tri pour les nombres
         $.fn.dataTable.ext.type.order["quantite-grade-pre"] = (d) => {return parseInt(d.replace(/\s/g, ''));};
         $.fn.dataTable.ext.type.order["moment-D MMM YYYY-pre"] = (d) => {return moment(d.replace('.', ''), "D MMM YYYY", "fr", true).unix();};
@@ -255,14 +253,6 @@ const DATEPICKER_OPTION  = {
             // Boite radar
             let boiteRadar = new BoiteRadar();
             boiteRadar.afficher();
-
-            // Traceur
-            if(monProfil.parametre["cleTraceur"].valeur){
-                let traceur1 = new TraceurJoueur(monProfil.parametre["etatTraceurJoueur"].valeur, monProfil.parametre["intervalleTraceurJoueur"].valeur, monProfil.parametre["nbPageTraceurJoueur"].valeur);
-                traceur1.tracer();
-                let traceur2 = new TraceurAlliance(monProfil.parametre["etatTraceurAlliance"].valeur, monProfil.parametre["intervalleTraceurAlliance"].valeur);
-                traceur2.tracer();
-            }
 
             let uri = location.pathname, page = null;
             // Routing

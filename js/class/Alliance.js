@@ -171,80 +171,7 @@ class Alliance
 	*/
     getDescription()
     {
-        return $.ajax({url : "http://" + Utils.serveur + ".fourmizzz.fr/classementAlliance.php?alliance=" + this._tag});
-    }
-    /**
-    *
-    */
-    getHistorique(id)
-    {
-        // Récuperation des données
-		$.get("http://outiiil.fr/fzzz/" + Utils.serveur + "/team/" + this._tag, (data) => {
-			// Creation du graphique
-            let donnees = JSON.parse(data);
-			let chart = new Highcharts.Chart({
-				chart : {
-					renderTo : id,
-					type : "spline",
-					backgroundColor : null,
-					height : 320
-				},
-                data : {
-                    csv : donnees.message,
-                    itemDelimiter: ';',
-                    firstRowAsNames : false
-                },
-				title : {text: ''},
-				credits : {enabled : false},
-				tooltip : {
-					crosshairs : [true],
-					formatter : function(){
-						let s = Highcharts.dateFormat("%A %e %b", this.x);
-						$.each(this.points, function(){s += "<br/><span style='color:" + this.series.color + "'>\u25CF</span> " + this.series.name + ": <b>" + numeral(this.y).format() + "</b>";});
-						return s;
-					},
-					shared : true,
-					useHTML : true
-				},
-                plotOptions : {
-                    series : {
-                        marker : {
-                            radius : 3
-                        }
-                    }
-                },
-				xAxis : {
-					lineColor : "#333333",
-					labels : {style : {color : "#222222"}},
-                    min : moment().subtract(30, "days").valueOf()
-				},
-				yAxis : {
-					lineColor : "#333333",
-					gridLineColor : "#333333",
-					labels : {align : "left", x : 0, y : -2, style : {color : "#222222"}},
-                    title : {text : null}
-				},
-				series : [
-                    {name : "Membre", color : "#013ADF", visible : false},
-					{name : "Terrain", color : "#21610B", type : "areaspline"},
-					{name : "Fourmilière", color : "#DF7401", type : "areaspline", visible : false},
-					{name : "Technologie", color : "#FF0000", type : "areaspline", visible : false}
-				]
-			});
-
-			$("span[id^=o_selectHisto]").click((e) => {
-				let chart = $("#o_chartAlliance").highcharts(), histo = $(e.currentTarget).attr("data");
-				$("span[id^=o_selectHisto]").removeClass("active");
-				$(e.currentTarget).addClass("active");
-				if(histo == "all")
-					chart.xAxis[0].update({min : moment("2016-01-01").valueOf()});
-				else
-					chart.xAxis[0].update({min : moment().subtract(histo, "days").valueOf()});
-                $("#o_bouton_range span.active").addClass("ligne_paire");
-                $("#o_bouton_range span:not(.active)").removeClass("ligne_paire");
-			});
-		});
-        return this;
+        return $.ajax({url : "/classementAlliance.php?alliance=" + this._tag});
     }
     /**
     *
@@ -284,7 +211,7 @@ class Alliance
     {
         return $.ajax({
             type : "post",
-            url : "http://" + Utils.serveur + ".fourmizzz.fr/classementAlliance.php",
+            url : "/classementAlliance.php",
             data : {
                 "requete" : elt,
                 "recherche" : 1,

@@ -2,7 +2,6 @@
 
 <br/>
 
-[![Outiiil logo](./img/header.png)](http://outiiil.fr)
 
 <br/>
 
@@ -30,3 +29,8 @@ autrement ou celui qui veut vraiment participer peut desormais le faire plus fac
 
 Le projet disponible ci dessus présente les sources en javascript pouvant être intégré à une extension ou un userscript.
 
+## Statut de la reprise
+
+- Version 2.1.0 : Manifest V3, requêtes compatibles http/https.
+- Le serveur outiiil.fr est arrêté : le traceur, la carte et les graphiques d'historique ont été retirés.
+- Le temps de trajet vers les membres d'une alliance (outil Combat) n'est plus disponible : il reposait sur les coordonnées de ce serveur.
